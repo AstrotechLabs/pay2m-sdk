@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace AstrotechLabs\AsaasSdk\CreatePixCharge\Dto;
-
-use AstrotechLabs\AsaasSdk\Enum\BillingTypes;
+namespace AstrotechLabs\Pay2MSdk\CreatePixCharge\Dto;
 
 final class PixData
 {
     public function __construct(
-        public readonly string $customer,
-        public readonly BillingTypes $billingType,
+        public readonly GeneratorData $generator,
         public readonly float $value,
-        public readonly string $dueDate
+        public readonly ?string $message = null
     ) {
     }
 

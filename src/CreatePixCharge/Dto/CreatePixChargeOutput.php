@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AstrotechLabs\AsaasSdk\CreatePixCharge\Dto;
+namespace AstrotechLabs\Pay2MSdk\CreatePixCharge\Dto;
 
 use JsonSerializable;
 
@@ -10,7 +10,6 @@ final class CreatePixChargeOutput implements JsonSerializable
 {
     public function __construct(
         public readonly string $gatewayId,
-        public readonly string $paymentUrl,
         public readonly string $copyPasteUrl,
         public readonly array $details,
         public readonly string $qrCode

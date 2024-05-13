@@ -8,10 +8,10 @@ services:
     volumes:
       - ./:/app
     networks:
-      - asaas-pix-network
+      - pay2m-api-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 networks:
-  asaas-pix-network:
+  pay2m-api-network:
     driver: bridge

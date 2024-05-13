@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AstrotechLabs\AsaasSdk\CreatePixCharge\Exceptions;
+namespace AstrotechLabs\Pay2MSdk\CreatePixCharge\Exceptions;
 
 use Exception;
 
@@ -16,12 +16,10 @@ final class CreatePixChargeException extends Exception
     public function __construct(
         int $code,
         string $description,
-        string $type,
         array $requestPayload,
         array $responsePayload
     ) {
         $this->code = $code;
-        $this->type = $type;
         $this->description = $description;
         $this->requestPayload = $requestPayload;
         $this->responsePayload = $responsePayload;
@@ -31,11 +29,6 @@ final class CreatePixChargeException extends Exception
     public function getDescription(): string
     {
         return $this->description;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
     }
 
     public function getRequestPayload(): array

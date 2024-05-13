@@ -1,6 +1,6 @@
-# Assas Pay SDK para PHP
+# Pay2M SDK para PHP
 
-Este é um repositório que possui uma abstração a API do Asaas, facilitando a criação de PIX Copia e Cola como também outros serviços oferecidos
+Este é um repositório que possui uma abstração a API da Pay2M, facilitando a criação de PIX Copia e Cola.
 
 ## Installation
 
@@ -9,78 +9,97 @@ A forma mais recomendada de instalar este pacote é através do [composer](http:
 Para instalar, basta executar o comando abaixo
 
 ```bash
-$ php composer.phar require astrotechlabs/asaas-sdk
+$ @todo
 ```
 
 ou adicionar esse linha
 
 ```
-"astrotechlabs/asaas-sdk": "^1.0"
+@todo
 ```
 
 na seção `require` do seu arquivo `composer.json`.
 
 ## Como Usar?
 ### Minimo para utilização
-#
-#### 1. Identificador único de cliente
-```php
-$sut = new CustomerIdentifierCreator($_ENV['ASAAS_API_KEY'], true);
 
-$customerAsaasId = $sut->generateCustomerIdentifier(new CustomerData(
-    name: 'Joãozinho Barbosa',
-    phone: '999999999',
-    cpfCnpj: '01234567890'
+#### Criar uma cobrança
+```php
+use AstrotechLabs\Pay2MSdk\Pay2MGateway;
+use AstrotechLabs\Pay2MSdk\Pay2MGatewayParams;
+use AstrotechLabs\Pay2MSdk\CreatePixCharge\Dto\PixData;
+use AstrotechLabs\Pay2MSdk\CreatePixCharge\Dto\GeneratorData;
+
+// Crie uma instância de Pay2MGateway utilizando como parâmetros o seu ClientId e sua ClientSecret que podem ser adquiridos em seu painel PAY2M
+$createPixChargeGateway = new Pay2MGateway(new Pay2MGatewayParams($_ENV['CLIENT_ID'], $_ENV['CLIENT_SECRET']));
+
+// Chame o método createCharge() para criar uma cobrança, este método gera o token de autenticação e cria a cobrança na Pay2M
+$response = $createPixChargeGateway->createCharge(new PixData(
+    generator: new GeneratorData(
+        name: 'Dev Teste', // STRING | Deve ser o mesmo nome que está na sua conta Pay2M
+        document: '###########' // STRING | Deve ser o mesmo documento da sua conta Pay2M
+    ),
+    value: 1, // FLOAT | Valor mínimo 1;
 ));
 
-print_r($customerAsaasId);
+print_r($response);
 ```
 
 #### Saída
-```
-[
-    'identifier' => 'cus_xxxxxxxx'
-]
-```
-#
-#### 2. Criar cobrança
 ```php
-use AstrotechLabs\AsaasSdk\AssasGateway;
-use AstrotechLabs\AsaasSdk\Enum\BillingTypes;
-use AstrotechLabs\AsaasSdk\AssasGatewayParams;
-use AstrotechLabs\AsaasSdk\CreatePixCharge\Dto\PixData;
-
-$asaasGateway = new AssasGateway(new AssasGatewayParams(
-    apiKey: 'xxxxxxxxxx',
-    // isSandBox: true (opcional)
-));
-
-$pixChargeResponse = $asaasGateway->createCharge(new PixData(
-    customer: 'cus_xxxxxxxx', // Identificador único de cliente
-    billingType: BillingTypes::PIX,
-    value: 100.00,
-    dueDate: "2023-12-20"
-));
-
-print_r($pixChargeResponse);
-```
-
-### Saída
-```
 [
-    'gatewayId': 'pay_kp6gqaovguxqr1od',
-    'paymentUrl': 'https://sandbox.asaas.com/i/kp6gqaovguxqr1od',
-    'copyPasteUrl': '00020101021226820014br.gov.bcb.pix2560qrpix-h.bradesco.com.br/xxxxxxxxx-xxxx......',
-    'details' => [
-        'object' => 'payment'
-        'id' => 'pay_kp6gqaovguxqr1od'
-        'dateCreated' => '2023-12-16'
-        'customer' => 'cus_000005797885'
-        'paymentLink' => 'https://sandbox.asaas.com/i/xxxxxxxxxxx',
-        ..............
-    ],
-    'qrCode' => 'data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAYsAAA......'
-]
+   "gatewayId" => "D77A2489850C4C2F93942BAFEDB419EC697", 
+   "copyPasteUrl" => "00020101021226860014br.gov.bcb.pix256.........99", 
+   "details" => [
+         "reference_code" => "D77A2489850C4C2F93942BAF......", 
+         "content" => "00020101021226860014br.gov.bcb.pix2........99" 
+      ], 
+   "qrCode" => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATEAAAExCAIAAACbBwI/A......v1AwD/IZOQRSYhi0xCFpmELDIJWWQSssgkZJFJyCKTkEUmIYtMQhaZhCwyCVlkErLIJGSRScgik5BFJiHLPzd...............QSssgkZJFJyCKTkEUmIYtMQhaZhCwyCVlkErLIJGSRScgik5BFJiHLv+XfD4wqDsUhAAAAAElFTkSuQmCC" 
+]; 
+ 
+```
+
+### Alternativa
+
+#### Criar uma cobrança com autênticação manual
+```php
+use AstrotechLabs\Pay2MSdk\Pay2MGateway;
+use AstrotechLabs\Pay2MSdk\Pay2MGatewayParams;
+use AstrotechLabs\Pay2MSdk\CreatePixCharge\Dto\PixData;
+use AstrotechLabs\Pay2MSdk\CreatePixCharge\Dto\GeneratorData;
+
+// Crie uma instância de Pay2MGateway utilizando como parâmetros o seu ClientId e sua ClientSecret que podem ser adquiridos em seu painel PAY2M
+$createPixChargeGateway = new Pay2MGateway(new Pay2MGatewayParams($_ENV['CLIENT_ID'], $_ENV['CLIENT_SECRET']));
+
+// Gere o token manualmente e armazene-o
+$token = $createPixChargeGateway->getAuthToken();
+
+// Chame o método createCharge() para criar uma cobrança e passe o parâmetro token
+$response = $createPixChargeGateway->createCharge(new PixData(
+    generator: new GeneratorData(
+        name: 'Dev Teste', // STRING | Deve ser o mesmo nome que está na sua conta Pay2M
+        document: '###########', // STRING | Deve ser o mesmo documento da sua conta Pay2M
+        manualToken: true, // BOOL | O parâmetro como true irá cobrar o token e utilizará o mesmo para gerar a cobrança
+        token: $token // STRING | Deve ser o token gerado pelo metodo getAuthToken() da classe Pay2MGateway
+    ),
+    value: 1, // FLOAT | Valor mínimo 1;
+));
+
+print_r($response);
+```
+
+#### Saída
+```php
+[
+   "gatewayId" => "D77A2489850C4C2F93942BAFEDB419EC697", 
+   "copyPasteUrl" => "00020101021226860014br.gov.bcb.pix256.........99", 
+   "details" => [
+         "reference_code" => "D77A2489850C4C2F93942BAF......", 
+         "content" => "00020101021226860014br.gov.bcb.pix2........99" 
+      ], 
+   "qrCode" => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATEAAAExCAIAAACbBwI/A......v1AwD/IZOQRSYhi0xCFpmELDIJWWQSssgkZJFJyCKTkEUmIYtMQhaZhCwyCVlkErLIJGSRScgik5BFJiHLPzd...............QSssgkZJFJyCKTkEUmIYtMQhaZhCwyCVlkErLIJGSRScgik5BFJiHLv+XfD4wqDsUhAAAAAElFTkSuQmCC" 
+]; 
+ 
 ```
 
 ## Contributing

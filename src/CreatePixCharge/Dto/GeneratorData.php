@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace AstrotechLabs\Pay2MSdk\CreatePixCharge\Dto;
 
-final class QrCodeOutput
+final class GeneratorData
 {
     public function __construct(
-        public readonly string $encodedImage,
-        public readonly string $copyAndPaste,
-        public readonly string $expirationDate
+        public readonly string $name,
+        public readonly string $document
     ) {
     }
 
@@ -29,5 +28,10 @@ final class QrCodeOutput
         }
 
         return $this->{$property};
+    }
+
+    public function getBillingType(): string
+    {
+        return $this->billingType->value;
     }
 }
