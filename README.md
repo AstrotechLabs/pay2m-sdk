@@ -9,13 +9,13 @@ A forma mais recomendada de instalar este pacote é através do [composer](http:
 Para instalar, basta executar o comando abaixo
 
 ```bash
-$ @todo
+$ php composer.phar require astrotechlabs/pay2m-sdk
 ```
 
 ou adicionar esse linha
 
 ```
-@todo
+"astrotechlabs/pay2m-sdk": "^1.1"
 ```
 
 na seção `require` do seu arquivo `composer.json`.
